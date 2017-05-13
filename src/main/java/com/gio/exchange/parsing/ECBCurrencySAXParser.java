@@ -1,5 +1,6 @@
 package com.gio.exchange.parsing;
 
+import org.springframework.stereotype.Component;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -15,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
+@Component
 public class ECBCurrencySAXParser extends DefaultHandler implements ConversionDataParser {
 
     public Date referenceDate;

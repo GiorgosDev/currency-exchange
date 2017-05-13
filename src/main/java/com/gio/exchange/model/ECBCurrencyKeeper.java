@@ -1,6 +1,7 @@
 package com.gio.exchange.model;
 
-import com.gio.exchange.parsing.ECBCurrencySAXParser;
+import com.gio.exchange.parsing.ConversionDataParser;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,8 +15,10 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
     public static final String TODAY_RATE_URL = "http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml";
     public static final String NINETY_DAYS_RATE_URL = "http://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml";
 
-    Map<Date, Map<String,Float>> currencyRates = new HashMap<>();
-    ECBCurrencySAXParser parser = new ECBCurrencySAXParser();
+    private Map<Date, Map<String,Float>> currencyRates = new HashMap<>();
+
+    @Autowired
+    private ConversionDataParser parser;
 
     @Override
     public void load() {
@@ -36,5 +39,10 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
     @Override
     public Map<Date, Map<String, Float>> getRates() {
         return currencyRates;
+    }
+
+    @Override
+    public void setParser(ConversionDataParser parser) {
+        this.parser = parser;
     }
 }
