@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +17,7 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
     public static final String TODAY_RATE_URL = "http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml";
     public static final String NINETY_DAYS_RATE_URL = "http://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml";
 
-    private Map<Date, Map<String,Float>> currencyRates = new HashMap<>();
+    private Map<LocalDate, Map<String,Float>> currencyRates = new HashMap<>();
 
     @Autowired
     private ConversionDataParser parser;
@@ -42,7 +42,7 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
         if(currencyRates.size() == 0)
             load();
         else {
-            currencyRates.entrySet().stream().filter(e -> new Date() - e.getKey()>90).forEach(e -> currencyRates.remove(e.getKey()));
+            currencyRates.entrySet().stream().filter(e -> LocalDate.now().minusDays(90).isAfter(e.getKey())).forEach(e -> currencyRates.remove(e.getKey()));
             try(InputStream input = new URL(TODAY_RATE_URL).openStream()) {
                 currencyRates.putAll(parser.parse(input));
             } catch (IOException e) {
@@ -54,7 +54,7 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
     }
 
     @Override
-    public Map<Date, Map<String, Float>> getRates() {
+    public Map<LocalDate, Map<String, Float>> getRates() {
         return currencyRates;
     }
 

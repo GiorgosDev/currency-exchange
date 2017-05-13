@@ -2,7 +2,7 @@ package com.gio.exchange.business.keeper;
 
 import com.gio.exchange.business.parsing.ConversionDataParser;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Map;
 
 public interface CurrencyKeeper {
@@ -13,7 +13,7 @@ public interface CurrencyKeeper {
 
     void refresh();
 
-    Map<Date, Map<String,Float>> getRates();
+    Map<LocalDate, Map<String,Float>> getRates();
 
     void setParser(ConversionDataParser parser);
 

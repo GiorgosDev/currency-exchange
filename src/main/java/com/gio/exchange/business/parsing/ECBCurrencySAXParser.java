@@ -9,18 +9,17 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 import java.io.InputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TimeZone;
 
 @Component
 public class ECBCurrencySAXParser extends DefaultHandler implements ConversionDataParser {
 
-    public Date referenceDate;
-    Map<Date, Map<String,Float>> parsedMap = new HashMap<>();
+    public LocalDate referenceDate;
+    Map<LocalDate, Map<String,Float>> parsedMap = new HashMap<>();
 
     public static final String PARSING_ERROR_MESSAGE  = "Error occurred while XML parsing";
 
@@ -30,13 +29,10 @@ public class ECBCurrencySAXParser extends DefaultHandler implements ConversionDa
     public static final String RATE_ATTRIBUTE_NAME = "rate";
 
     public static final String DATE_ATTRIBUTE_FORMAT = "yyyy-MM-dd";
-    public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(DATE_ATTRIBUTE_FORMAT);
-    static{
-        DATE_FORMATTER.setTimeZone(TimeZone.getTimeZone("CET"));
-    }
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DATE_ATTRIBUTE_FORMAT).withZone(ZoneId.of("CET"));
 
     @Override
-    public Map<Date, Map<String,Float>> parse(InputStream inputData){
+    public Map<LocalDate, Map<String,Float>> parse(InputStream inputData){
         parsedMap = new HashMap<>();
         try {
 
@@ -63,12 +59,8 @@ public class ECBCurrencySAXParser extends DefaultHandler implements ConversionDa
     private void parseDate(Attributes attributes){
         String date = attributes.getValue(DATE_ATTRIBUTE_NAME);
         if (date != null) {
-            try {
-                referenceDate = DATE_FORMATTER.parse(date);
-                parsedMap.put(referenceDate, new HashMap<>());
-            } catch (ParseException e) {
-                throw new ConversionParsingException(PARSING_ERROR_MESSAGE, e);
-            }
+            referenceDate = LocalDate.parse(date, DATE_FORMATTER);
+            parsedMap.put(referenceDate, new HashMap<>());
         }
     }
 
