@@ -14,8 +14,13 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
     ECBCurrencySAXParser parser = new ECBCurrencySAXParser();
 
     @Override
+    public void load() {
+        //todo if there's no data  - load 90 days
+
+    }
+
+    @Override
     public void refresh() {
-        //todo if no data loaded - load 90 days
         //todo if there's data - remove last date, load new date, add new date
 
     }
