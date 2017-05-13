@@ -2,7 +2,7 @@ package com.gio.exchange.business.parsing;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Map;
 
 public class ECBCurrencySAXStubParser implements ConversionDataParser {
@@ -12,7 +12,7 @@ public class ECBCurrencySAXStubParser implements ConversionDataParser {
     private String stubInputData;
 
     @Override
-    public Map<Date, Map<String, Float>> parse(InputStream inputData) {
+    public Map<LocalDate, Map<String, Float>> parse(InputStream inputData) {
         // ignores input stream, parses stubInputData in any case
         return parser.parse(new ByteArrayInputStream(stubInputData.getBytes()));
     }

@@ -10,7 +10,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,18 +21,18 @@ public class ECBCurrencyParserTests {
 
     @Test
     public void parseToCubeFromURLDailyTest() throws IOException {
-        Map<Date, Map<String,Float>> parsedData = fetchAndParseFromURL(ECBCurrencyKeeper.TODAY_RATE_URL);
+        Map<LocalDate, Map<String,Float>> parsedData = fetchAndParseFromURL(ECBCurrencyKeeper.TODAY_RATE_URL);
         Assert.assertEquals(1, parsedData.size());
     }
 
     @Test
     public void parseToCubeFromURLHistoryTest() throws IOException {
-        Map<Date, Map<String,Float>> parsedData = fetchAndParseFromURL(ECBCurrencyKeeper.NINETY_DAYS_RATE_URL);
+        Map<LocalDate, Map<String,Float>> parsedData = fetchAndParseFromURL(ECBCurrencyKeeper.NINETY_DAYS_RATE_URL);
         Assert.assertEquals(RESPONSE_RECORDS_NUMBER_90_DAYS, parsedData.size());
     }
 
-    private Map<Date, Map<String,Float>> fetchAndParseFromURL(String url) throws IOException {
-        Map<Date, Map<String,Float>> parsedData = new HashMap<>();
+    private Map<LocalDate, Map<String,Float>> fetchAndParseFromURL(String url) throws IOException {
+        Map<LocalDate, Map<String,Float>> parsedData = new HashMap<>();
         try(InputStream input = new URL(url).openStream()){
             parsedData = parser.parse(input);
         }
@@ -41,19 +41,19 @@ public class ECBCurrencyParserTests {
 
     @Test
     public void parseSaxFromStringOneDayTest() throws ParseException {
-        Map<Date, Map<String,Float>> parsedData = parser.parse(new ByteArrayInputStream(SAMPLE_XML_ONE_DATE.getBytes(StandardCharsets.UTF_8)));
+        Map<LocalDate, Map<String,Float>> parsedData = parser.parse(new ByteArrayInputStream(SAMPLE_XML_ONE_DATE.getBytes(StandardCharsets.UTF_8)));
         Assert.assertEquals(1, parsedData.size());
     }
 
     @Test
     public void parseSaxFromStringTwoDaysTest() throws ParseException {
-        Map<Date, Map<String,Float>> parsedData = parser.parse(new ByteArrayInputStream(SAMPLE_XML_TWO_DATES.getBytes(StandardCharsets.UTF_8)));
+        Map<LocalDate, Map<String,Float>> parsedData = parser.parse(new ByteArrayInputStream(SAMPLE_XML_TWO_DATES.getBytes(StandardCharsets.UTF_8)));
         Assert.assertEquals(2, parsedData.size());
     }
 
     @Test
     public void parseSaxFromStringContentTest() throws ParseException {
-        Map<Date, Map<String,Float>> parsedData = parser.parse(new ByteArrayInputStream(SAMPLE_XML_TWO_DATES.getBytes(StandardCharsets.UTF_8)));
+        Map<LocalDate, Map<String,Float>> parsedData = parser.parse(new ByteArrayInputStream(SAMPLE_XML_TWO_DATES.getBytes(StandardCharsets.UTF_8)));
         Assert.assertEquals(2, parsedData.size());
     }
 
