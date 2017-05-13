@@ -1,4 +1,4 @@
-package com.gio.exchange.parsing;
+package com.gio.exchange.business.parsing;
 
 import com.gio.exchange.CurrencyExchangeAppException;
 

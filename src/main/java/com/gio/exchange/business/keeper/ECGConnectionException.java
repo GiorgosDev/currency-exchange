@@ -1,4 +1,4 @@
-package com.gio.exchange.model;
+package com.gio.exchange.business.keeper;
 
 import com.gio.exchange.CurrencyExchangeAppException;
 

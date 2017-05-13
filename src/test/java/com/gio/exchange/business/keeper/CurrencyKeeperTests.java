@@ -1,7 +1,7 @@
-package com.gio.exchange.model;
+package com.gio.exchange.business.keeper;
 
-import com.gio.exchange.parsing.ECBCurrencyParserTests;
-import com.gio.exchange.parsing.ECBCurrencySAXParser;
+import com.gio.exchange.business.parsing.ECBCurrencyParserTests;
+import com.gio.exchange.business.parsing.ECBCurrencySAXParser;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

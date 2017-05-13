@@ -1,6 +1,6 @@
-package com.gio.exchange.model;
+package com.gio.exchange.business.keeper;
 
-import com.gio.exchange.parsing.ConversionDataParser;
+import com.gio.exchange.business.parsing.ConversionDataParser;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
@@ -12,6 +12,8 @@ import java.util.Map;
 
 public class ECBCurrencyKeeper implements CurrencyKeeper {
 
+    private int daysExpired = 90;
+
     public static final String TODAY_RATE_URL = "http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml";
     public static final String NINETY_DAYS_RATE_URL = "http://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml";
 
@@ -19,6 +21,11 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
 
     @Autowired
     private ConversionDataParser parser;
+
+    @Override
+    public void setExpiredDays(int days) {
+        daysExpired = days;
+    }
 
     @Override
     public void load() {
@@ -32,7 +39,17 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
 
     @Override
     public void refresh() {
-        //todo if there's data - remove last date, load new date, add new date
+        if(currencyRates.size() == 0)
+            load();
+        else {
+            currencyRates.entrySet().stream().filter(e -> new Date() - e.getKey()>90).forEach(e -> currencyRates.remove(e.getKey()));
+            try(InputStream input = new URL(TODAY_RATE_URL).openStream()) {
+                currencyRates.putAll(parser.parse(input));
+            } catch (IOException e) {
+                throw new ECGConnectionException(e.getMessage(), e);
+            }
+        }
+
 
     }
 

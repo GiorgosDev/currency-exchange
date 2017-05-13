@@ -1,11 +1,13 @@
-package com.gio.exchange.model;
+package com.gio.exchange.business.keeper;
 
-import com.gio.exchange.parsing.ConversionDataParser;
+import com.gio.exchange.business.parsing.ConversionDataParser;
 
 import java.util.Date;
 import java.util.Map;
 
 public interface CurrencyKeeper {
+
+    void setExpiredDays(int days);
 
     void load();
 
