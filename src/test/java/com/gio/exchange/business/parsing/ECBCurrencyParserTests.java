@@ -1,6 +1,6 @@
 package com.gio.exchange.business.parsing;
 
-import com.gio.exchange.business.keeper.ECBCurrencyKeeper;
+import com.gio.exchange.business.storage.ECBCurrencyKeeper;
 import org.junit.Assert;
 import org.junit.Test;
 

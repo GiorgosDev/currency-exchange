@@ -1,9 +1,10 @@
-package com.gio.exchange.business.keeper;
+package com.gio.exchange.business.storage;
 
 import com.gio.exchange.business.parsing.ConversionDataParser;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +15,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+@Repository
 public class ECBCurrencyKeeper implements CurrencyKeeper {
 
     private static final Logger logger = LogManager.getLogger(ECBCurrencyKeeper.class);
