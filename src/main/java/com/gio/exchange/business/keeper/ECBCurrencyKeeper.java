@@ -1,6 +1,8 @@
 package com.gio.exchange.business.keeper;
 
 import com.gio.exchange.business.parsing.ConversionDataParser;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
@@ -13,6 +15,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class ECBCurrencyKeeper implements CurrencyKeeper {
+
+    private static final Logger logger = LogManager.getLogger(ECBCurrencyKeeper.class);
 
     private int daysExpired = 90;
 
@@ -34,6 +38,7 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
         try(InputStream input = new URL(NINETY_DAYS_RATE_URL).openStream()) {
             currencyRates = parser.parse(input);
         } catch (IOException e) {
+            logger.error(e.getMessage(),e);
             throw new ECGConnectionException(e.getMessage(), e);
         }
 
@@ -51,11 +56,10 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
             try(InputStream input = new URL(TODAY_RATE_URL).openStream()) {
                 currencyRates.putAll(parser.parse(input));
             } catch (IOException e) {
+                logger.error(e.getMessage(),e);
                 throw new ECGConnectionException(e.getMessage(), e);
             }
         }
-
-
     }
 
     @Override

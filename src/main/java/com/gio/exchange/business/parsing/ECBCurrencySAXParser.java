@@ -1,5 +1,7 @@
 package com.gio.exchange.business.parsing;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -31,6 +33,8 @@ public class ECBCurrencySAXParser extends DefaultHandler implements ConversionDa
     public static final String DATE_ATTRIBUTE_FORMAT = "yyyy-MM-dd";
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DATE_ATTRIBUTE_FORMAT).withZone(ZoneId.of("CET"));
 
+    private static final Logger logger = LogManager.getLogger(ECBCurrencySAXParser.class);
+
     @Override
     public Map<LocalDate, Map<String,Float>> parse(InputStream inputData){
         parsedMap = new HashMap<>();
@@ -42,6 +46,7 @@ public class ECBCurrencySAXParser extends DefaultHandler implements ConversionDa
             saxReader.parse(new InputSource(inputData));
 
         } catch (Exception e) {
+            logger.error(PARSING_ERROR_MESSAGE, e);
             throw new ConversionParsingException(PARSING_ERROR_MESSAGE, e);
         }
         return parsedMap;
@@ -71,6 +76,7 @@ public class ECBCurrencySAXParser extends DefaultHandler implements ConversionDa
             try {
                 parsedMap.get(referenceDate).put(currency, Float.valueOf(rate));
             } catch (Exception e) {
+                logger.error(PARSING_ERROR_MESSAGE,e);
                 throw new ConversionParsingException(PARSING_ERROR_MESSAGE, e);
             }
         }
