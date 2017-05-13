@@ -28,7 +28,7 @@ public class ECBCurrencyParserTests {
     @Test
     public void parseToCubeFromURLHistoryTest() throws IOException {
         Map<Date, Map<String,Float>> parsedData = fetchAndParseFromURL(ECBCurrencyKeeper.NINETY_DAYS_RATE_URL);
-        Assert.assertEquals(62, parsedData.size());
+        Assert.assertEquals(RESPONSE_RECORDS_NUMBER_90_DAYS, parsedData.size());
     }
 
     private Map<Date, Map<String,Float>> fetchAndParseFromURL(String url) throws IOException {
@@ -67,6 +67,7 @@ public class ECBCurrencyParserTests {
         parser.parse(new ByteArrayInputStream(SAMPLE_XML_WRONG_RATE.getBytes(StandardCharsets.UTF_8)));
     }
 
+    public static final int RESPONSE_RECORDS_NUMBER_90_DAYS = 62;
 
     public static final String SAMPLE_XML_ONE_DATE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<gesmes:Envelope xmlns:gesmes=\"http://www.gesmes.org/xml/2002-08-01\" xmlns=\"http://www.ecb.int/vocabulary/2002-08-01/eurofxref\">\n" +
