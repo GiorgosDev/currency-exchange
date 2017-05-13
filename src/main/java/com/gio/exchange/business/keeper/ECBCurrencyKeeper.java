@@ -42,7 +42,7 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
         if(currencyRates.size() == 0)
             load();
         else {
-            currencyRates.entrySet().stream().filter(e -> LocalDate.now().minusDays(90).isAfter(e.getKey())).forEach(e -> currencyRates.remove(e.getKey()));
+            currencyRates.entrySet().stream().filter(e -> LocalDate.now().minusDays(daysExpired).isAfter(e.getKey())).forEach(e -> currencyRates.remove(e.getKey()));
             try(InputStream input = new URL(TODAY_RATE_URL).openStream()) {
                 currencyRates.putAll(parser.parse(input));
             } catch (IOException e) {
