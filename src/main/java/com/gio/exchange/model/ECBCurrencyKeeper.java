@@ -4,7 +4,6 @@ import com.gio.exchange.parsing.ECBCurrencySAXParser;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
@@ -22,10 +21,8 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
     public void load() {
         try(InputStream input = new URL(NINETY_DAYS_RATE_URL).openStream()) {
             currencyRates = parser.parse(input);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new ECGConnectionException(e.getMessage(), e);
         }
 
     }
