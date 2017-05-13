@@ -68,7 +68,7 @@ public class ECBCurrencyParserTests {
     }
 
 
-    private static final String SAMPLE_XML_ONE_DATE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+    public static final String SAMPLE_XML_ONE_DATE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<gesmes:Envelope xmlns:gesmes=\"http://www.gesmes.org/xml/2002-08-01\" xmlns=\"http://www.ecb.int/vocabulary/2002-08-01/eurofxref\">\n" +
             "\t<gesmes:subject>Reference rates</gesmes:subject>\n" +
             "\t<gesmes:Sender>\n" +
@@ -112,7 +112,7 @@ public class ECBCurrencyParserTests {
             "</gesmes:Envelope>";
 
 
-    private static final String SAMPLE_XML_TWO_DATES = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+    public static final String SAMPLE_XML_TWO_DATES = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<gesmes:Envelope xmlns:gesmes=\"http://www.gesmes.org/xml/2002-08-01\" xmlns=\"http://www.ecb.int/vocabulary/2002-08-01/eurofxref\">\n" +
             "\t<gesmes:subject>Reference rates</gesmes:subject>\n" +
             "\t<gesmes:Sender>\n" +
