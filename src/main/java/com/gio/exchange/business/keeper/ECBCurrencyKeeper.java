@@ -8,7 +8,9 @@ import java.io.InputStream;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class ECBCurrencyKeeper implements CurrencyKeeper {
 
@@ -42,7 +44,10 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
         if(currencyRates.size() == 0)
             load();
         else {
-            currencyRates.entrySet().stream().filter(e -> LocalDate.now().minusDays(daysExpired).isAfter(e.getKey())).forEach(e -> currencyRates.remove(e.getKey()));
+            Set<LocalDate> datesToRemove = new HashSet<>();
+            currencyRates.entrySet().stream().filter(e -> LocalDate.now().minusDays(daysExpired).isAfter(e.getKey()))
+                    .forEach(e -> datesToRemove.add(e.getKey()));
+            datesToRemove.forEach(e -> currencyRates.remove(e));
             try(InputStream input = new URL(TODAY_RATE_URL).openStream()) {
                 currencyRates.putAll(parser.parse(input));
             } catch (IOException e) {

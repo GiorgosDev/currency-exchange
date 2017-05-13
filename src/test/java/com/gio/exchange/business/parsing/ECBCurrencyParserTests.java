@@ -127,7 +127,7 @@ public class ECBCurrencyParserTests {
             "\t\t<gesmes:name>European Central Bank</gesmes:name>\n" +
             "\t</gesmes:Sender>\n" +
             "\t<Cube>\n" +
-            "\t\t<Cube time='2017-05-12'>\n" +
+            "\t\t<Cube time='2017-05-11'>\n" +
             "\t\t\t<Cube currency='USD' rate='1.0876'/>\n" +
             "\t\t\t<Cube currency='JPY' rate='123.82'/>\n" +
             "\t\t\t<Cube currency='BGN' rate='1.9558'/>\n" +
@@ -160,7 +160,7 @@ public class ECBCurrencyParserTests {
             "\t\t\t<Cube currency='THB' rate='37.778'/>\n" +
             "\t\t\t<Cube currency='ZAR' rate='14.6336'/>\n" +
             "\t\t</Cube>\n" +
-            "\t\t<Cube time='2017-05-13'>\n" +
+            "\t\t<Cube time='2017-05-10'>\n" +
             "\t\t\t<Cube currency='USD' rate='1.0876'/>\n" +
             "\t\t\t<Cube currency='JPY' rate='123.82'/>\n" +
             "\t\t\t<Cube currency='BGN' rate='1.9558'/>\n" +
