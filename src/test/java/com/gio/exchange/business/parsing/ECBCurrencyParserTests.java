@@ -17,8 +17,6 @@ import java.util.Map;
 public class ECBCurrencyParserTests {
     ConversionDataParser parser = new ECBCurrencySAXParser();
 
-    //todo test content
-
     @Test
     public void parseToCubeFromURLDailyTest() throws IOException {
         Map<LocalDate, Map<String,Float>> parsedData = fetchAndParseFromURL(ECBCurrencyKeeper.TODAY_RATE_URL);
@@ -43,6 +41,15 @@ public class ECBCurrencyParserTests {
     public void parseSaxFromStringOneDayTest() throws ParseException {
         Map<LocalDate, Map<String,Float>> parsedData = parser.parse(new ByteArrayInputStream(SAMPLE_XML_ONE_DATE.getBytes(StandardCharsets.UTF_8)));
         Assert.assertEquals(1, parsedData.size());
+    }
+
+    @Test
+    public void parseSaxFromStringOneDayContentTest() throws ParseException {
+        Map<LocalDate, Map<String,Float>> parsedData = parser.parse(new ByteArrayInputStream(SAMPLE_XML_ONE_DATE.getBytes(StandardCharsets.UTF_8)));
+        Map<String, Float> currenciesForDay = parsedData.get(LocalDate.of(2017, 5, 12));
+        Assert.assertEquals(31, currenciesForDay.size());
+        Assert.assertEquals(1.0876, currenciesForDay.get("USD").floatValue(), 0.0001);
+        Assert.assertEquals(123.82, currenciesForDay.get("JPY").floatValue(), 0.01);
     }
 
     @Test
