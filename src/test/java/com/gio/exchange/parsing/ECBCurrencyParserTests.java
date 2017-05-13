@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ECBCurrencyParserTests {
-    ECBCurrencySAXParser parser = new ECBCurrencySAXParser();
+    ConversionDataParser parser = new ECBCurrencySAXParser();
 
     //todo test content
 
