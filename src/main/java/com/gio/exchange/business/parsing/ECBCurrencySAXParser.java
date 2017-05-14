@@ -65,7 +65,9 @@ public class ECBCurrencySAXParser extends DefaultHandler implements ConversionDa
         String date = attributes.getValue(DATE_ATTRIBUTE_NAME);
         if (date != null) {
             referenceDate = LocalDate.parse(date, DATE_FORMATTER);
-            parsedMap.put(referenceDate, new HashMap<>());
+            Map currencyMap = new HashMap<>();
+            currencyMap.put("EUR",1);
+            parsedMap.put(referenceDate, currencyMap);
         }
     }
 
