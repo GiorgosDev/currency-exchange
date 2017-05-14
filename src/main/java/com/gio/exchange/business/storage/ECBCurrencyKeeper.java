@@ -10,10 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Repository
 public class ECBCurrencyKeeper implements CurrencyKeeper {
@@ -51,22 +48,53 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
         if(currencyRates.size() == 0)
             load();
         else {
-            Set<LocalDate> datesToRemove = new HashSet<>();
-            currencyRates.entrySet().stream().filter(e -> LocalDate.now().minusDays(daysExpired).isAfter(e.getKey()))
-                    .forEach(e -> datesToRemove.add(e.getKey()));
-            datesToRemove.forEach(e -> currencyRates.remove(e));
-            try(InputStream input = new URL(TODAY_RATE_URL).openStream()) {
-                currencyRates.putAll(parser.parse(input));
-            } catch (IOException e) {
-                logger.error(e.getMessage(),e);
-                throw new ECGConnectionException(e.getMessage(), e);
-            }
+            if(currencyRates.containsKey(LocalDate.now())) // no need to refresh
+                return;
+            removeExpiredRates();
+            loadTodayRate();
+        }
+    }
+
+    private void removeExpiredRates(){
+        Set<LocalDate> datesToRemove = new HashSet<>();
+        currencyRates.entrySet().stream().filter(e -> LocalDate.now().minusDays(daysExpired).isAfter(e.getKey()))
+                .forEach(e -> datesToRemove.add(e.getKey()));
+        datesToRemove.forEach(e -> currencyRates.remove(e));
+    }
+
+    private void loadTodayRate(){
+        try(InputStream input = new URL(TODAY_RATE_URL).openStream()) {
+            currencyRates.putAll(parser.parse(input));
+        } catch (IOException e) {
+            logger.error(e.getMessage(),e);
+            throw new ECGConnectionException(e.getMessage(), e);
         }
     }
 
     @Override
-    public Map<LocalDate, Map<String, Float>> getRates() {
-        return currencyRates;
+    public Map<String, Float> getRatesForDate(LocalDate requestDate){
+        if(LocalDate.now().minusDays(daysExpired).isAfter(requestDate)){
+            return Collections.emptyMap();
+        }
+        return getRateForNonHolidayDate(requestDate);
+    }
+
+    @Override
+    public int getNumberOfDaysWithRates() {
+        return currencyRates.size();
+    }
+
+    private Map<String, Float> getRateForNonHolidayDate(LocalDate requestDate){
+        LocalDate lastNonHolidayDate = requestDate;
+        while (isDatePresentInCurrencyRatesAndNotExpired(lastNonHolidayDate) ){
+            lastNonHolidayDate = lastNonHolidayDate.minusDays(1);
+        }
+        return currencyRates.get(lastNonHolidayDate);
+    }
+
+    private boolean isDatePresentInCurrencyRatesAndNotExpired(LocalDate lastNonHolidayDate){
+        return !currencyRates.containsKey(lastNonHolidayDate)
+                && LocalDate.now().minusDays(daysExpired).isBefore(lastNonHolidayDate);
     }
 
     @Override

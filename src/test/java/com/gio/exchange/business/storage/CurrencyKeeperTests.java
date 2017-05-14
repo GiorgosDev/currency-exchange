@@ -17,7 +17,7 @@ public class CurrencyKeeperTests {
         keeper = new ECBCurrencyKeeper();
         keeper.setParser(new ECBCurrencySAXParser());
         keeper.load();
-        Assert.assertEquals(ECBCurrencyParserTests.RESPONSE_RECORDS_NUMBER_90_DAYS, keeper.getRates().size());
+        Assert.assertEquals(ECBCurrencyParserTests.RESPONSE_RECORDS_NUMBER_90_DAYS, keeper.getNumberOfDaysWithRates());
     }
 
     @Test
@@ -26,13 +26,15 @@ public class CurrencyKeeperTests {
         ECBCurrencySAXStubParser parser = new ECBCurrencySAXStubParser();
         parser.setStubInputData(ECBCurrencyParserTests.SAMPLE_XML_TWO_DATES);
         keeper.setParser(parser);
-        keeper.setExpiredDays(1);
+        keeper.setDaysExpired(1);
         keeper.load();
-        Assert.assertEquals(2, keeper.getRates().size());
+        Assert.assertNotNull(keeper.getRatesForDate(LocalDate.of(2017, 5, 11)));
+        Assert.assertTrue(keeper.getRatesForDate(LocalDate.of(2017, 5, 11)).size() > 0);
+        Assert.assertNull(keeper.getRatesForDate(LocalDate.of(2017, 5, 15)));
         parser.setStubInputData(SAMPLE_XML_NEW_DATE);
         keeper.refresh();
-        Assert.assertEquals(1, keeper.getRates().size());
-        Assert.assertEquals(2, keeper.getRates().get(LocalDate.of(2017,5,15)).size());
+        Assert.assertNotNull(keeper.getRatesForDate(LocalDate.of(2017, 5, 15)));
+        Assert.assertTrue(keeper.getRatesForDate(LocalDate.of(2017, 5, 15)).size() > 0);
     }
 
     private static final String SAMPLE_XML_NEW_DATE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +

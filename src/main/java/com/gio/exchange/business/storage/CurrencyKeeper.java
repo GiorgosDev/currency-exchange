@@ -13,7 +13,9 @@ public interface CurrencyKeeper {
 
     void refresh();
 
-    Map<LocalDate, Map<String,Float>> getRates();
+    Map<String, Float> getRatesForDate(LocalDate requestDate);
+
+    int getNumberOfDaysWithRates();
 
     void setParser(ConversionDataParser parser);
 
