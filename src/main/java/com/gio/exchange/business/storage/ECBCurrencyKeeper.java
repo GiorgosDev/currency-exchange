@@ -31,7 +31,7 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
     private ConversionDataParser parser;
 
     @Override
-    public void setExpiredDays(int days) {
+    public void setDaysExpired(int days) {
         daysExpired = days;
     }
 
@@ -72,5 +72,10 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
     @Override
     public void setParser(ConversionDataParser parser) {
         this.parser = parser;
+    }
+
+    @Override
+    public int getDaysExpired() {
+        return daysExpired;
     }
 }

@@ -7,7 +7,7 @@ import java.util.Map;
 
 public interface CurrencyKeeper {
 
-    void setExpiredDays(int days);
+    void setDaysExpired(int days);
 
     void load();
 
@@ -16,5 +16,7 @@ public interface CurrencyKeeper {
     Map<LocalDate, Map<String,Float>> getRates();
 
     void setParser(ConversionDataParser parser);
+
+    int getDaysExpired();
 
 }
