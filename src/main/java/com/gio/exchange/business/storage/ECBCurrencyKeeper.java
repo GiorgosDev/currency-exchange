@@ -1,9 +1,9 @@
 package com.gio.exchange.business.storage;
 
+import com.gio.exchange.business.MessageConstants;
 import com.gio.exchange.business.parsing.ConversionDataParser;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
@@ -18,16 +18,15 @@ import java.util.concurrent.ConcurrentHashMap;
 @Repository
 public class ECBCurrencyKeeper implements CurrencyKeeper {
 
-    private static final Logger logger = LogManager.getLogger(ECBCurrencyKeeper.class);
+    @Value("${rate.days.expired}")
+    private int daysExpired;
 
-    //todo move to config
-    private int daysExpired = 90;
+    @Value("${rate.daily.url}")
+    private String rateDailyURL;
 
-    public static final String TODAY_RATE_URL = "http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml";
-    public static final String NINETY_DAYS_RATE_URL = "http://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml";
+    @Value("${rate.90.days.url}")
+    private String rateThreeMonthURL;
 
-    public static final String EXPIRED_DATE_MESSAGE = "Rate requested for the date not in the range. No Conversion data present for the date.";
-    public static final String FUTURE_DATE_MESSAGE = "No data conversion data for future dates is present.";
 
     private Map<LocalDate, Map<String,Float>> currencyRates = new ConcurrentHashMap<>();
 
@@ -41,10 +40,9 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
 
     @Override
     public void load() {
-        try(InputStream input = new URL(NINETY_DAYS_RATE_URL).openStream()) {
+        try(InputStream input = new URL(rateThreeMonthURL).openStream()) {
             currencyRates = parser.parse(input);
         } catch (IOException e) {
-            logger.error(e.getMessage(),e);
             throw new ECBConnectionException(e.getMessage(), e);
         }
 
@@ -73,10 +71,9 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
     }
 
     private void loadTodayRate(){
-        try(InputStream input = new URL(TODAY_RATE_URL).openStream()) {
+        try(InputStream input = new URL(rateDailyURL).openStream()) {
             currencyRates.putAll(parser.parse(input));
         } catch (IOException e) {
-            logger.error(e.getMessage(),e);
             throw new ECBConnectionException(e.getMessage(), e);
         }
     }
@@ -85,10 +82,10 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
     @Override
     public Map<String, Float> getRatesForDate(LocalDate requestDate){
         if(isDateExpired(requestDate)){
-            throw new ConversionNoDataException(EXPIRED_DATE_MESSAGE);
+            throw new ConversionNoDataException(MessageConstants.EXPIRED_DATE_MESSAGE);
         }
         if(requestDate.isAfter(LocalDate.now())){
-            throw new ConversionNoDataException(FUTURE_DATE_MESSAGE);
+            throw new ConversionNoDataException(MessageConstants.FUTURE_DATE_MESSAGE);
         }
         return getRateForNonHolidayDate(requestDate);
     }
@@ -104,7 +101,7 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
             lastNonHolidayDate = lastNonHolidayDate.minusDays(1);
         }
         if(isDateExpired(lastNonHolidayDate))
-            throw new ConversionNoDataException(EXPIRED_DATE_MESSAGE);
+            throw new ConversionNoDataException(MessageConstants.EXPIRED_DATE_MESSAGE);
         return currencyRates.get(lastNonHolidayDate);
     }
 
