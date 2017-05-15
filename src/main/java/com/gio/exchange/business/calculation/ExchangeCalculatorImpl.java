@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.Map;
 
 @Component
@@ -36,7 +37,7 @@ public class ExchangeCalculatorImpl implements ExchangeCalculator {
         if(rates.containsKey(currencyFrom) && rates.containsKey(currencyTo)){
             if(currencyFrom.equals(currencyTo))
                 return request.getAmount();
-            final MathContext rounding = new MathContext(precision);
+            final MathContext rounding = new MathContext(precision, RoundingMode.HALF_UP);
             final BigDecimal currencyFromRate = new BigDecimal(rates.get(currencyFrom));
             final BigDecimal currencyToRate = new BigDecimal(rates.get(currencyTo));
             BigDecimal amount = request.getAmount();
@@ -49,5 +50,9 @@ public class ExchangeCalculatorImpl implements ExchangeCalculator {
 
     public void setKeeper(CurrencyKeeper keeper) {
         this.keeper = keeper;
+    }
+
+    public void setPrecision(int precision) {
+        this.precision = precision;
     }
 }

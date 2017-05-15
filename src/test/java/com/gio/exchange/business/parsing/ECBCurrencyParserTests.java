@@ -1,8 +1,11 @@
 package com.gio.exchange.business.parsing;
 
-import com.gio.exchange.business.storage.ECBCurrencyKeeper;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -14,18 +17,26 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@TestPropertySource(value="classpath:/application.properties")
 public class ECBCurrencyParserTests {
     ConversionDataParser parser = new ECBCurrencySAXParser();
 
+    @Value(value = "${rate.daily.url}")
+    private String rateDailyURL;
+
+    @Value("${rate.90.days.url}")
+    private String rateThreeMonthURL;
+
     @Test
     public void parseToCubeFromURLDailyTest() throws IOException {
-        Map<LocalDate, Map<String,Float>> parsedData = fetchAndParseFromURL(ECBCurrencyKeeper.TODAY_RATE_URL);
+        Map<LocalDate, Map<String,Float>> parsedData = fetchAndParseFromURL(rateDailyURL);
         Assert.assertEquals(1, parsedData.size());
     }
 
     @Test
     public void parseToCubeFromURLHistoryTest() throws IOException {
-        Map<LocalDate, Map<String,Float>> parsedData = fetchAndParseFromURL(ECBCurrencyKeeper.NINETY_DAYS_RATE_URL);
+        Map<LocalDate, Map<String,Float>> parsedData = fetchAndParseFromURL(rateThreeMonthURL);
         Assert.assertTrue(parsedData.size() > 1);
     }
 

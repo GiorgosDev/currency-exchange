@@ -3,12 +3,24 @@ package com.gio.exchange.business.storage;
 import com.gio.exchange.business.parsing.ECBCurrencySAXStubParser;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.time.LocalDate;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@TestPropertySource(value="classpath:/application.properties")
 public class CurrencyKeeperTests {
-    CurrencyKeeper keeper;
 
+    @Value(value = "${rate.daily.url}")
+    private String rateDailyURL;
+
+    @Value("${rate.90.days.url}")
+    private String rateThreeMonthURL;
+
+    CurrencyKeeper keeper;
 
     @Test
     public void loadDataTest(){
@@ -58,6 +70,8 @@ public class CurrencyKeeperTests {
 
     private void initKeeper(String stubData, int daysExpired, ECBCurrencySAXStubParser parser){
         keeper = new ECBCurrencyKeeper();
+        ((ECBCurrencyKeeper)keeper).setRateDailyURL(rateDailyURL);
+        ((ECBCurrencyKeeper)keeper).setRateThreeMonthURL(rateThreeMonthURL);
         parser.setStubInputData(stubData);
         keeper.setParser(parser);
         keeper.setDaysExpired(daysExpired);

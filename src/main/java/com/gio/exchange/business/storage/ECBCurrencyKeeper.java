@@ -119,4 +119,12 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
     public int getDaysExpired() {
         return daysExpired;
     }
+
+    public void setRateDailyURL(String rateDailyURL) {
+        this.rateDailyURL = rateDailyURL;
+    }
+
+    public void setRateThreeMonthURL(String rateThreeMonthURL) {
+        this.rateThreeMonthURL = rateThreeMonthURL;
+    }
 }
