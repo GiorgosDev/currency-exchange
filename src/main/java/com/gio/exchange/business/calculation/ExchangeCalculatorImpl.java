@@ -1,5 +1,6 @@
 package com.gio.exchange.business.calculation;
 
+import com.gio.exchange.business.storage.ConversionNoDataException;
 import com.gio.exchange.business.storage.CurrencyKeeper;
 import com.gio.exchange.business.vo.CurrencyExchangeRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import java.util.Map;
 public class ExchangeCalculatorImpl implements ExchangeCalculator {
 
     public static final int REFRESH_INTERVAL = 1000*60*10; //every ten minutes
+    public static final String NO_CURRENCY_MESSAGE = "No data for requested currency present.";
 
     @Autowired
     CurrencyKeeper keeper;
@@ -28,15 +30,19 @@ public class ExchangeCalculatorImpl implements ExchangeCalculator {
     public BigDecimal calculate(CurrencyExchangeRequest request) {
 
         Map<String, Float> rates = keeper.getRatesForDate(request.getDate());
-        final MathContext rounding = new MathContext(5);
         final String currencyFrom = request.getCurrencyFrom();
-        final BigDecimal currencyFromRate = BigDecimal.valueOf(rates.get(currencyFrom))
-                .round(rounding);
         final String currencyTo = request.getCurrencyTo();
-        final BigDecimal currencyToRate = BigDecimal.valueOf(rates.get(currencyTo))
-                .round(rounding);
-        BigDecimal amount = request.getAmount();
-        return amount.multiply(currencyFromRate, rounding).divide(currencyToRate, rounding);
+        if(rates.containsKey(currencyFrom) && rates.containsKey(currencyTo)){
+            if(currencyFrom.equals(currencyTo))
+                return request.getAmount();
+            final MathContext rounding = new MathContext(7);
+            final BigDecimal currencyFromRate = new BigDecimal(rates.get(currencyFrom));
+
+            final BigDecimal currencyToRate = new BigDecimal(rates.get(currencyTo));
+            BigDecimal amount = request.getAmount();
+            return amount.multiply(currencyToRate).divide(currencyFromRate, rounding);
+        } else throw new ConversionNoDataException(NO_CURRENCY_MESSAGE);
+
     }
 
     public void setKeeper(CurrencyKeeper keeper) {

@@ -103,6 +103,8 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
         while (isDatePresentInCurrencyRatesAndNotExpired(lastNonHolidayDate) ){
             lastNonHolidayDate = lastNonHolidayDate.minusDays(1);
         }
+        if(isDateExpired(lastNonHolidayDate))
+            throw new ConversionNoDataException(EXPIRED_DATE_MESSAGE);
         return currencyRates.get(lastNonHolidayDate);
     }
 

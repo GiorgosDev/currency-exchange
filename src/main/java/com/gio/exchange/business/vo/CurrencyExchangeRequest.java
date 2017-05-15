@@ -9,6 +9,16 @@ public class CurrencyExchangeRequest {
     private LocalDate date;
     private BigDecimal amount;
 
+    public CurrencyExchangeRequest(String currencyFrom, String currencyTo, LocalDate date, BigDecimal amount) {
+        this.currencyFrom = currencyFrom;
+        this.currencyTo = currencyTo;
+        this.date = date;
+        this.amount = amount;
+    }
+
+    public CurrencyExchangeRequest() {
+    }
+
     public String getCurrencyFrom() {
         return currencyFrom;
     }
