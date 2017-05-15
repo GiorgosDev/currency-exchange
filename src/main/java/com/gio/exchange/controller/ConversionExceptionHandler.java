@@ -25,6 +25,8 @@ public class ConversionExceptionHandler {
 
         errorObj.setMessage(appExp.getMessage());
 
+        log.error(appExp.getMessage(), appExp);
+
         log.debug("Method : handleException - EXIT");
         return new ResponseEntity<ServiceResponse>(errorObj, HttpStatus.INTERNAL_SERVER_ERROR);
     }
