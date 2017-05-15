@@ -1,6 +1,5 @@
 package com.gio.exchange.business.storage;
 
-import com.gio.exchange.business.parsing.ECBCurrencySAXParser;
 import com.gio.exchange.business.parsing.ECBCurrencySAXStubParser;
 import org.junit.Assert;
 import org.junit.Test;
@@ -13,63 +12,64 @@ public class CurrencyKeeperTests {
 
     @Test
     public void loadDataTest(){
-        keeper = new ECBCurrencyKeeper();
-        keeper.setParser(new ECBCurrencySAXParser());
-        keeper.load();
-        Assert.assertTrue(keeper.getNumberOfDaysWithRates() > 0);
+        initKeeper(SAMPLE_XML_NEW_DATE, 90);
+        Assert.assertEquals(1, keeper.getNumberOfDaysWithRates());
+        Assert.assertEquals(RECORDS_NOW, keeper.getRatesForDate(LocalDate.now()).size());
     }
 
     @Test
     public void getPreviousDateRate(){
-        keeper = new ECBCurrencyKeeper();
-        ECBCurrencySAXStubParser parser = new ECBCurrencySAXStubParser();
-        parser.setStubInputData(SAMPLE_XML_TWO_DATES);
-        keeper.setParser(parser);
-        keeper.setDaysExpired(2);
-        keeper.load();
-        Assert.assertEquals(32, keeper.getRatesForDate(LocalDate.now()).size());
+        initKeeper(SAMPLE_XML_TWO_DATES, 2);
+        Assert.assertEquals(RECORDS_TWO_DAYS_BEFORE, keeper.getRatesForDate(LocalDate.now()).size());
     }
 
     @Test(expected = ConversionNoDataException.class)
     public void getFutureDateRate(){
-        keeper = new ECBCurrencyKeeper();
-        ECBCurrencySAXStubParser parser = new ECBCurrencySAXStubParser();
-        parser.setStubInputData(SAMPLE_XML_TWO_DATES);
-        keeper.setParser(parser);
-        keeper.setDaysExpired(2);
-        keeper.load();
+        initKeeper(SAMPLE_XML_TWO_DATES, 2);
         keeper.getRatesForDate(LocalDate.now().plusDays(1));
+    }
+
+    @Test(expected = ConversionNoDataException.class)
+    public void getExpiredDateRate(){
+        initKeeper(SAMPLE_XML_TWO_DATES, 2);
+        keeper.getRatesForDate(LocalDate.now().minusDays(3));
     }
 
 
     @Test
     public void refreshDataTest(){
-        keeper = new ECBCurrencyKeeper();
         ECBCurrencySAXStubParser parser = new ECBCurrencySAXStubParser();
-        parser.setStubInputData(SAMPLE_XML_TWO_DATES);
-        keeper.setParser(parser);
-        keeper.setDaysExpired(3);
-        keeper.load();
-        Assert.assertEquals(32, keeper.getRatesForDate(TWO_DAYS_BEFORE).size());
-        Assert.assertEquals(32, keeper.getRatesForDate(THREE_DAYS_BEFORE).size());
+        initKeeper(SAMPLE_XML_TWO_DATES, 3, parser);
+        Assert.assertEquals(RECORDS_TWO_DAYS_BEFORE, keeper.getRatesForDate(TWO_DAYS_BEFORE).size());
+        Assert.assertEquals(RECORDS_THREE_DAYS_BEFORE, keeper.getRatesForDate(THREE_DAYS_BEFORE).size());
         Assert.assertEquals(2, keeper.getNumberOfDaysWithRates());
         parser.setStubInputData(SAMPLE_XML_NEW_DATE);
         keeper.setDaysExpired(1);
         keeper.refresh();
-        Assert.assertEquals(3, keeper.getRatesForDate(LocalDate.now()).size());
+        Assert.assertEquals(RECORDS_NOW, keeper.getRatesForDate(LocalDate.now()).size());
         Assert.assertEquals(1, keeper.getNumberOfDaysWithRates());
-        Assert.assertEquals(0, keeper.getRatesForDate(TWO_DAYS_BEFORE).size());
-        Assert.assertEquals(0, keeper.getRatesForDate(THREE_DAYS_BEFORE).size());
     }
 
-    //todo test exceptions on future date or expired date
 
-    //todo move same blocks to init methods
+    private void initKeeper(String stubData, int daysExpired){
+        ECBCurrencySAXStubParser parser = new ECBCurrencySAXStubParser();
+        initKeeper(stubData, daysExpired, parser);
+    }
 
-    //todo replace magic numbers
+    private void initKeeper(String stubData, int daysExpired, ECBCurrencySAXStubParser parser){
+        keeper = new ECBCurrencyKeeper();
+        parser.setStubInputData(stubData);
+        keeper.setParser(parser);
+        keeper.setDaysExpired(daysExpired);
+        keeper.load();
+    }
 
     private static final LocalDate TWO_DAYS_BEFORE = LocalDate.now().minusDays(2);
     private static final LocalDate THREE_DAYS_BEFORE = LocalDate.now().minusDays(3);
+
+    private static final int RECORDS_TWO_DAYS_BEFORE = 32;
+    private static final int RECORDS_THREE_DAYS_BEFORE = 32;
+    private static final int RECORDS_NOW = 3;
 
 
     private static final String SAMPLE_XML_TWO_DATES = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
