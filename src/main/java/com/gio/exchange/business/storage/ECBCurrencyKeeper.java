@@ -61,9 +61,12 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
 
     private void removeExpiredRates(){
         Set<LocalDate> datesToRemove = new HashSet<>();
-        currencyRates.entrySet().stream().filter(e -> LocalDate.now().minusDays(daysExpired).isAfter(e.getKey()))
-                .forEach(e -> datesToRemove.add(e.getKey()));
+        currencyRates.forEach((key, value) -> {if(isDateExpired(key)) datesToRemove.add(key);});
         datesToRemove.forEach(currencyRates::remove);
+    }
+
+    private boolean isDateExpired(LocalDate date){
+        return LocalDate.now().minusDays(daysExpired).isAfter(date);
     }
 
     private void loadTodayRate(){
@@ -74,6 +77,7 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
             throw new ECGConnectionException(e.getMessage(), e);
         }
     }
+
 
     @Override
     public Map<String, Float> getRatesForDate(LocalDate requestDate){
@@ -98,7 +102,7 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
 
     private boolean isDatePresentInCurrencyRatesAndNotExpired(LocalDate lastNonHolidayDate){
         return !currencyRates.containsKey(lastNonHolidayDate)
-                && LocalDate.now().minusDays(daysExpired).isBefore(lastNonHolidayDate);
+                && !isDateExpired(lastNonHolidayDate);
     }
 
     @Override
