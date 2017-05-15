@@ -21,6 +21,7 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
 
     private static final Logger logger = LogManager.getLogger(ECBCurrencyKeeper.class);
 
+    //todo move to config
     private int daysExpired = 90;
 
     public static final String TODAY_RATE_URL = "http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml";
@@ -42,7 +43,7 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
             currencyRates = parser.parse(input);
         } catch (IOException e) {
             logger.error(e.getMessage(),e);
-            throw new ECGConnectionException(e.getMessage(), e);
+            throw new ECBConnectionException(e.getMessage(), e);
         }
 
     }
@@ -74,7 +75,7 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
             currencyRates.putAll(parser.parse(input));
         } catch (IOException e) {
             logger.error(e.getMessage(),e);
-            throw new ECGConnectionException(e.getMessage(), e);
+            throw new ECBConnectionException(e.getMessage(), e);
         }
     }
 
