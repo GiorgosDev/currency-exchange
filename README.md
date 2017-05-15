@@ -3,7 +3,10 @@ Java 8 currency exchange Restful API to exchange currency based on ECB service.
 Source data for conversion is taken from ECB service:
  http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml
  http://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml
-SAX parser is used to extract data and store in memory. Sping Scheduling is used to run job in backround which tries to update repository each 10 minutes. ConcurrentHashMap is used to handle concurrent calls (not-locking read, locking write). The nost of functions are covered with Unit tests (JUnit).
+SAX parser is used to extract data and store in memory. Sping Scheduling is used to run job in backround which tries to update repository each 10 minutes. ConcurrentHashMap is used to handle concurrent calls (not-locking read, locking write). The most of functions are covered with Unit tests (JUnit).
+
+Please use following command to run application from jar:
+java -jar exchange-1.0-SNAPSHOT.jar
 
 API:
 
