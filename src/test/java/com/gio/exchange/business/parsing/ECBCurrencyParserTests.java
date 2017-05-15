@@ -46,7 +46,7 @@ public class ECBCurrencyParserTests {
     @Test
     public void parseSaxFromStringOneDayContentTest() throws ParseException {
         Map<LocalDate, Map<String,Float>> parsedData = parser.parse(new ByteArrayInputStream(SAMPLE_XML_ONE_DATE.getBytes(StandardCharsets.UTF_8)));
-        Map<String, Float> currenciesForDay = parsedData.get(LocalDate.of(2017, 5, 12));
+        Map<String, Float> currenciesForDay = parsedData.get(TWO_DAYS_BEFORE);
         Assert.assertTrue(currenciesForDay.size() > 1);
         Assert.assertEquals(1.0876, currenciesForDay.get("USD").floatValue(), 0.0001);
         Assert.assertEquals(123.82, currenciesForDay.get("JPY").floatValue(), 0.01);
