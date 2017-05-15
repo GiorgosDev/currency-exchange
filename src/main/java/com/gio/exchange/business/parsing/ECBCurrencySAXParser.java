@@ -14,12 +14,13 @@ import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class ECBCurrencySAXParser extends DefaultHandler implements ConversionDataParser {
 
     public LocalDate referenceDate;
-    Map<LocalDate, Map<String,Float>> parsedMap = new HashMap<>();
+    private Map<LocalDate, Map<String,Float>> parsedMap = new ConcurrentHashMap<>();
 
     public static final String ELEMENT_NAME = "Cube";
     public static final String DATE_ATTRIBUTE_NAME = "time";
