@@ -1,8 +1,7 @@
 package com.gio.exchange.business.parsing;
 
 import com.gio.exchange.business.ConversionConstants;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import com.gio.exchange.business.MessageConstants;
 import org.springframework.stereotype.Component;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -22,14 +21,13 @@ public class ECBCurrencySAXParser extends DefaultHandler implements ConversionDa
     public LocalDate referenceDate;
     Map<LocalDate, Map<String,Float>> parsedMap = new HashMap<>();
 
-    public static final String PARSING_ERROR_MESSAGE  = "Error occurred while XML parsing";
-
     public static final String ELEMENT_NAME = "Cube";
     public static final String DATE_ATTRIBUTE_NAME = "time";
     public static final String CURRENCY_ATTRIBUTE_NAME = "currency";
     public static final String RATE_ATTRIBUTE_NAME = "rate";
+    public static final String DEFAULT_CURRENCY = "EUR";
+    public static final Float DEFAULT_RATE = 1.0000000f;
 
-    private static final Logger logger = LogManager.getLogger(ECBCurrencySAXParser.class);
 
     @Override
     public Map<LocalDate, Map<String,Float>> parse(InputStream inputData){
@@ -42,8 +40,7 @@ public class ECBCurrencySAXParser extends DefaultHandler implements ConversionDa
             saxReader.parse(new InputSource(inputData));
 
         } catch (Exception e) {
-            logger.error(PARSING_ERROR_MESSAGE, e);
-            throw new ConversionParsingException(PARSING_ERROR_MESSAGE, e);
+            throw new ConversionParsingException(MessageConstants.PARSING_ERROR_MESSAGE, e);
         }
         return parsedMap;
     }
@@ -62,7 +59,7 @@ public class ECBCurrencySAXParser extends DefaultHandler implements ConversionDa
         if (date != null) {
             referenceDate = LocalDate.parse(date, ConversionConstants.DATE_FORMATTER);
             Map<String, Float> currencyMap = new HashMap<>();
-            currencyMap.put("EUR",1.0000000f);
+            currencyMap.put(DEFAULT_CURRENCY, DEFAULT_RATE);
             parsedMap.put(referenceDate, currencyMap);
         }
     }
@@ -74,8 +71,7 @@ public class ECBCurrencySAXParser extends DefaultHandler implements ConversionDa
             try {
                 parsedMap.get(referenceDate).put(currency, Float.valueOf(rate));
             } catch (Exception e) {
-                logger.error(PARSING_ERROR_MESSAGE,e);
-                throw new ConversionParsingException(PARSING_ERROR_MESSAGE, e);
+                throw new ConversionParsingException(MessageConstants.PARSING_ERROR_MESSAGE, e);
             }
         }
     }

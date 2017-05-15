@@ -1,13 +1,14 @@
 package com.gio.exchange.business.calculation;
 
+import com.gio.exchange.business.MessageConstants;
 import com.gio.exchange.business.storage.ConversionNoDataException;
 import com.gio.exchange.business.storage.CurrencyKeeper;
 import com.gio.exchange.business.vo.CurrencyExchangeRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Map;
@@ -15,14 +16,13 @@ import java.util.Map;
 @Component
 public class ExchangeCalculatorImpl implements ExchangeCalculator {
 
-    public static final int REFRESH_INTERVAL = 1000*60*10; //every ten minutes
-    public static final String NO_CURRENCY_MESSAGE = "No data for requested currency present.";
+    @Value("${calculation.precision}")
+    private int precision;
 
     @Autowired
     CurrencyKeeper keeper;
 
-    @PostConstruct
-    @Scheduled(fixedRate = REFRESH_INTERVAL)
+    @Scheduled(fixedRateString = "${refresh.interval.milliseconds}")
     public void refreshData(){
         keeper.refresh();
     }
@@ -36,13 +36,14 @@ public class ExchangeCalculatorImpl implements ExchangeCalculator {
         if(rates.containsKey(currencyFrom) && rates.containsKey(currencyTo)){
             if(currencyFrom.equals(currencyTo))
                 return request.getAmount();
-            final MathContext rounding = new MathContext(7);
+            final MathContext rounding = new MathContext(precision);
             final BigDecimal currencyFromRate = new BigDecimal(rates.get(currencyFrom));
-
             final BigDecimal currencyToRate = new BigDecimal(rates.get(currencyTo));
             BigDecimal amount = request.getAmount();
             return amount.multiply(currencyToRate).divide(currencyFromRate, rounding);
-        } else throw new ConversionNoDataException(NO_CURRENCY_MESSAGE);
+        } else{
+            throw new ConversionNoDataException(MessageConstants.NO_CURRENCY_MESSAGE);
+        }
 
     }
 
