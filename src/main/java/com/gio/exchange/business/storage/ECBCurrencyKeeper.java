@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -26,6 +25,9 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
 
     public static final String TODAY_RATE_URL = "http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml";
     public static final String NINETY_DAYS_RATE_URL = "http://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml";
+
+    public static final String EXPIRED_DATE_MESSAGE = "Rate requested for the date not in the range. No Conversion data present for the date.";
+    public static final String FUTURE_DATE_MESSAGE = "No data conversion data for future dates is present.";
 
     private Map<LocalDate, Map<String,Float>> currencyRates = new ConcurrentHashMap<>();
 
@@ -82,8 +84,11 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
 
     @Override
     public Map<String, Float> getRatesForDate(LocalDate requestDate){
-        if(isDateExpired(requestDate) || requestDate.isAfter(LocalDate.now())){
-            return Collections.emptyMap();
+        if(isDateExpired(requestDate)){
+            throw new ConversionNoDataException(EXPIRED_DATE_MESSAGE);
+        }
+        if(requestDate.isAfter(LocalDate.now())){
+            throw new ConversionNoDataException(FUTURE_DATE_MESSAGE);
         }
         return getRateForNonHolidayDate(requestDate);
     }
