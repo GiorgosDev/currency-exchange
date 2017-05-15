@@ -74,11 +74,11 @@ public class ECBCurrencyParserTests {
         parser.parse(new ByteArrayInputStream(SAMPLE_XML_WRONG_RATE.getBytes(StandardCharsets.UTF_8)));
     }
 
-    public static final LocalDate TWO_DAYS_BEFORE = LocalDate.now().minusDays(2);
-    public static final LocalDate THREE_DAYS_BEFORE = LocalDate.now().minusDays(3);
+    private static final LocalDate TWO_DAYS_BEFORE = LocalDate.now().minusDays(2);
+    private static final LocalDate THREE_DAYS_BEFORE = LocalDate.now().minusDays(3);
 
 
-    public static final String SAMPLE_XML_ONE_DATE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+    private static final String SAMPLE_XML_ONE_DATE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<gesmes:Envelope xmlns:gesmes=\"http://www.gesmes.org/xml/2002-08-01\" xmlns=\"http://www.ecb.int/vocabulary/2002-08-01/eurofxref\">\n" +
             "\t<gesmes:subject>Reference rates</gesmes:subject>\n" +
             "\t<gesmes:Sender>\n" +
@@ -122,7 +122,7 @@ public class ECBCurrencyParserTests {
             "</gesmes:Envelope>";
 
 
-    public static final String SAMPLE_XML_TWO_DATES = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+    private static final String SAMPLE_XML_TWO_DATES = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<gesmes:Envelope xmlns:gesmes=\"http://www.gesmes.org/xml/2002-08-01\" xmlns=\"http://www.ecb.int/vocabulary/2002-08-01/eurofxref\">\n" +
             "\t<gesmes:subject>Reference rates</gesmes:subject>\n" +
             "\t<gesmes:Sender>\n" +
