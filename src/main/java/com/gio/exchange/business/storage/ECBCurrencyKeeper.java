@@ -10,7 +10,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
 public class ECBCurrencyKeeper implements CurrencyKeeper {
@@ -22,7 +26,7 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
     public static final String TODAY_RATE_URL = "http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml";
     public static final String NINETY_DAYS_RATE_URL = "http://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml";
 
-    private Map<LocalDate, Map<String,Float>> currencyRates = new HashMap<>();
+    private Map<LocalDate, Map<String,Float>> currencyRates = new ConcurrentHashMap<>();
 
     @Autowired
     private ConversionDataParser parser;
@@ -59,7 +63,7 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
         Set<LocalDate> datesToRemove = new HashSet<>();
         currencyRates.entrySet().stream().filter(e -> LocalDate.now().minusDays(daysExpired).isAfter(e.getKey()))
                 .forEach(e -> datesToRemove.add(e.getKey()));
-        datesToRemove.forEach(e -> currencyRates.remove(e));
+        datesToRemove.forEach(currencyRates::remove);
     }
 
     private void loadTodayRate(){
