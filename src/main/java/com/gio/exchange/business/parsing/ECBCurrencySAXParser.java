@@ -32,7 +32,7 @@ public class ECBCurrencySAXParser extends DefaultHandler implements ConversionDa
 
     @Override
     public Map<LocalDate, Map<String,Float>> parse(InputStream inputData){
-        parsedMap = new HashMap<>();
+        parsedMap = new ConcurrentHashMap<>();
         try {
 
             XMLReader saxReader = XMLReaderFactory.createXMLReader();
