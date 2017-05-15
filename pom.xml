@@ -38,12 +38,6 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.javamoney</groupId>
-            <artifactId>moneta</artifactId>
-            <version>0.9</version>
-        </dependency>
-
         <!-- JUnit-->
         <dependency>
             <groupId>junit</groupId>
