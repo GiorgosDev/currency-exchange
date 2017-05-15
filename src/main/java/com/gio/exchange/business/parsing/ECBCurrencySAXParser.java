@@ -1,5 +1,6 @@
 package com.gio.exchange.business.parsing;
 
+import com.gio.exchange.business.ConversionConstants;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -12,8 +13,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import java.io.InputStream;
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,9 +28,6 @@ public class ECBCurrencySAXParser extends DefaultHandler implements ConversionDa
     public static final String DATE_ATTRIBUTE_NAME = "time";
     public static final String CURRENCY_ATTRIBUTE_NAME = "currency";
     public static final String RATE_ATTRIBUTE_NAME = "rate";
-
-    public static final String DATE_ATTRIBUTE_FORMAT = "yyyy-MM-dd";
-    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DATE_ATTRIBUTE_FORMAT).withZone(ZoneId.of("CET"));
 
     private static final Logger logger = LogManager.getLogger(ECBCurrencySAXParser.class);
 
@@ -64,7 +60,7 @@ public class ECBCurrencySAXParser extends DefaultHandler implements ConversionDa
     private void parseDate(Attributes attributes){
         String date = attributes.getValue(DATE_ATTRIBUTE_NAME);
         if (date != null) {
-            referenceDate = LocalDate.parse(date, DATE_FORMATTER);
+            referenceDate = LocalDate.parse(date, ConversionConstants.DATE_FORMATTER);
             Map<String, Float> currencyMap = new HashMap<>();
             currencyMap.put("EUR",1.0000000f);
             parsedMap.put(referenceDate, currencyMap);
