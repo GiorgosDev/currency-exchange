@@ -21,19 +21,46 @@ public class CurrencyKeeperTests {
     }
 
     @Test
-    public void refreshDataTest(){
+    public void getPreviousDateRate(){
         keeper = new ECBCurrencyKeeper();
         ECBCurrencySAXStubParser parser = new ECBCurrencySAXStubParser();
         parser.setStubInputData(ECBCurrencyParserTests.SAMPLE_XML_TWO_DATES);
         keeper.setParser(parser);
         keeper.setDaysExpired(2);
         keeper.load();
-        Assert.assertTrue(keeper.getRatesForDate(ECBCurrencyParserTests.TWO_DAYS_BEFORE).size() > 0);
-        Assert.assertTrue(keeper.getRatesForDate(ECBCurrencyParserTests.THREE_DAYS_BEFORE).size() > 0);
-        Assert.assertEquals(0, keeper.getRatesForDate(LocalDate.now()).size());
+        Assert.assertEquals(32, keeper.getRatesForDate(LocalDate.now()).size());
+    }
+
+    @Test
+    public void getFutureDateRate(){
+        keeper = new ECBCurrencyKeeper();
+        ECBCurrencySAXStubParser parser = new ECBCurrencySAXStubParser();
+        parser.setStubInputData(ECBCurrencyParserTests.SAMPLE_XML_TWO_DATES);
+        keeper.setParser(parser);
+        keeper.setDaysExpired(2);
+        keeper.load();
+        Assert.assertEquals(0, keeper.getRatesForDate(LocalDate.now().plusDays(1)).size());
+    }
+
+
+    @Test
+    public void refreshDataTest(){
+        keeper = new ECBCurrencyKeeper();
+        ECBCurrencySAXStubParser parser = new ECBCurrencySAXStubParser();
+        parser.setStubInputData(ECBCurrencyParserTests.SAMPLE_XML_TWO_DATES);
+        keeper.setParser(parser);
+        keeper.setDaysExpired(3);
+        keeper.load();
+        Assert.assertEquals(32, keeper.getRatesForDate(ECBCurrencyParserTests.TWO_DAYS_BEFORE).size());
+        Assert.assertEquals(32, keeper.getRatesForDate(ECBCurrencyParserTests.THREE_DAYS_BEFORE).size());
+        Assert.assertEquals(2, keeper.getNumberOfDaysWithRates());
         parser.setStubInputData(SAMPLE_XML_NEW_DATE);
+        keeper.setDaysExpired(1);
         keeper.refresh();
-        Assert.assertTrue(keeper.getRatesForDate(LocalDate.now()).size() > 0);
+        Assert.assertEquals(3, keeper.getRatesForDate(LocalDate.now()).size());
+        Assert.assertEquals(1, keeper.getNumberOfDaysWithRates());
+        Assert.assertEquals(0, keeper.getRatesForDate(ECBCurrencyParserTests.TWO_DAYS_BEFORE).size());
+        Assert.assertEquals(0, keeper.getRatesForDate(ECBCurrencyParserTests.THREE_DAYS_BEFORE).size());
     }
 
     private static final String SAMPLE_XML_NEW_DATE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +

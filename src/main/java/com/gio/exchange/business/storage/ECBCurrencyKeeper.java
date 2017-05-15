@@ -81,7 +81,7 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
 
     @Override
     public Map<String, Float> getRatesForDate(LocalDate requestDate){
-        if(LocalDate.now().minusDays(daysExpired).isAfter(requestDate)){
+        if(isDateExpired(requestDate) || requestDate.isAfter(LocalDate.now())){
             return Collections.emptyMap();
         }
         return getRateForNonHolidayDate(requestDate);
