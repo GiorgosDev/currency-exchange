@@ -17,7 +17,7 @@ public class CurrencyKeeperTests {
         keeper = new ECBCurrencyKeeper();
         keeper.setParser(new ECBCurrencySAXParser());
         keeper.load();
-        Assert.assertEquals(ECBCurrencyParserTests.RESPONSE_RECORDS_NUMBER_90_DAYS, keeper.getNumberOfDaysWithRates());
+        Assert.assertTrue(keeper.getNumberOfDaysWithRates() > 0);
     }
 
     @Test
@@ -26,15 +26,14 @@ public class CurrencyKeeperTests {
         ECBCurrencySAXStubParser parser = new ECBCurrencySAXStubParser();
         parser.setStubInputData(ECBCurrencyParserTests.SAMPLE_XML_TWO_DATES);
         keeper.setParser(parser);
-        keeper.setDaysExpired(1);
+        keeper.setDaysExpired(2);
         keeper.load();
-        Assert.assertNotNull(keeper.getRatesForDate(LocalDate.of(2017, 5, 11)));
-        Assert.assertTrue(keeper.getRatesForDate(LocalDate.of(2017, 5, 11)).size() > 0);
-        Assert.assertNull(keeper.getRatesForDate(LocalDate.of(2017, 5, 15)));
+        Assert.assertTrue(keeper.getRatesForDate(ECBCurrencyParserTests.TWO_DAYS_BEFORE).size() > 0);
+        Assert.assertTrue(keeper.getRatesForDate(ECBCurrencyParserTests.THREE_DAYS_BEFORE).size() > 0);
+        Assert.assertEquals(0, keeper.getRatesForDate(LocalDate.now()).size());
         parser.setStubInputData(SAMPLE_XML_NEW_DATE);
         keeper.refresh();
-        Assert.assertNotNull(keeper.getRatesForDate(LocalDate.of(2017, 5, 15)));
-        Assert.assertTrue(keeper.getRatesForDate(LocalDate.of(2017, 5, 15)).size() > 0);
+        Assert.assertTrue(keeper.getRatesForDate(LocalDate.now()).size() > 0);
     }
 
     private static final String SAMPLE_XML_NEW_DATE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -44,7 +43,7 @@ public class CurrencyKeeperTests {
             "\t\t<gesmes:name>European Central Bank</gesmes:name>\n" +
             "\t</gesmes:Sender>\n" +
             "\t<Cube>\n" +
-            "\t\t<Cube time='2017-05-15'>\n" +
+            "\t\t<Cube time='" + LocalDate.now() + "'>\n" +
             "\t\t\t<Cube currency='USD' rate='1.0876'/>\n" +
             "\t\t\t<Cube currency='JPY' rate='123.82'/>\n" +
             "\t\t</Cube>\n" +
