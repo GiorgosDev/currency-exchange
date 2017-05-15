@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Map;
@@ -20,7 +21,7 @@ public class ExchangeCalculatorImpl implements ExchangeCalculator {
     @Autowired
     CurrencyKeeper keeper;
 
-
+    @PostConstruct
     @Scheduled(fixedRate = REFRESH_INTERVAL)
     public void refreshData(){
         keeper.refresh();
