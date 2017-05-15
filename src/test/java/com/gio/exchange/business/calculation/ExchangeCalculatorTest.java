@@ -1,10 +1,10 @@
 package com.gio.exchange.business.calculation;
 
 import com.gio.exchange.business.parsing.ECBCurrencySAXStubParser;
-import com.gio.exchange.business.storage.ConversionNoDataException;
-import com.gio.exchange.business.storage.CurrencyKeeper;
-import com.gio.exchange.business.storage.ECBCurrencyKeeper;
 import com.gio.exchange.business.vo.CurrencyExchangeRequest;
+import com.gio.exchange.storage.ConversionNoDataException;
+import com.gio.exchange.storage.CurrencyKeeper;
+import com.gio.exchange.storage.ECBCurrencyKeeper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

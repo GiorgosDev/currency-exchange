@@ -1,9 +1,9 @@
 package com.gio.exchange.business.calculation;
 
 import com.gio.exchange.business.MessageConstants;
-import com.gio.exchange.business.storage.ConversionNoDataException;
-import com.gio.exchange.business.storage.CurrencyKeeper;
 import com.gio.exchange.business.vo.CurrencyExchangeRequest;
+import com.gio.exchange.storage.ConversionNoDataException;
+import com.gio.exchange.storage.CurrencyKeeper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;

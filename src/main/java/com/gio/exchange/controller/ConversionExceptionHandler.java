@@ -15,6 +15,8 @@ public class ConversionExceptionHandler {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
+    private static final String FAILED_MESSAGE = "FAILED";
+
     @ExceptionHandler(value = CurrencyExchangeAppException.class)
     public ResponseEntity<ServiceResponse> handleException(CurrencyExchangeAppException appExp, WebRequest request) {
         log.debug("Method : handleException - ENTRY");
@@ -23,7 +25,9 @@ public class ConversionExceptionHandler {
 
         errorObj.setResponseCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
 
-        errorObj.setMessage(appExp.getMessage());
+        errorObj.setMessage(FAILED_MESSAGE);
+
+        errorObj.setPayload(appExp.getMessage());
 
         log.error(appExp.getMessage(), appExp);
 
