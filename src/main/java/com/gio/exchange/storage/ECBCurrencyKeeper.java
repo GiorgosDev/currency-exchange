@@ -1,4 +1,4 @@
-package com.gio.exchange.business.storage;
+package com.gio.exchange.storage;
 
 import com.gio.exchange.business.MessageConstants;
 import com.gio.exchange.business.parsing.ConversionDataParser;
