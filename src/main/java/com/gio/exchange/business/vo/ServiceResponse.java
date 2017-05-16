@@ -2,18 +2,18 @@ package com.gio.exchange.business.vo;
 
 public class ServiceResponse {
 
-    private int responseCode;
+    private int status;
 
     private String message;
 
     private Object payload;
 
-    public int getResponseCode() {
-        return responseCode;
+    public int getStatus() {
+        return status;
     }
 
-    public void setResponseCode(int responseCode) {
-        this.responseCode = responseCode;
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public String getMessage() {

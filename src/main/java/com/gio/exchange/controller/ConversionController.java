@@ -48,7 +48,7 @@ public class ConversionController {
                     date, amount);
 
             response.setPayload(calculator.calculate(request));
-            response.setResponseCode(HttpStatus.OK.value());
+            response.setStatus(HttpStatus.OK.value());
             response.setMessage(SUCCESS_MESSAGE);
         } catch (CurrencyExchangeAppException appExp){
             throw appExp;

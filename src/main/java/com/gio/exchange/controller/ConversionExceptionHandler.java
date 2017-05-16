@@ -23,7 +23,7 @@ public class ConversionExceptionHandler {
 
         ServiceResponse errorObj = new ServiceResponse();
 
-        errorObj.setResponseCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        errorObj.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 
         errorObj.setMessage(FAILED_MESSAGE);
 
