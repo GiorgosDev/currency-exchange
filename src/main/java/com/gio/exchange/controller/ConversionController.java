@@ -2,6 +2,7 @@ package com.gio.exchange.controller;
 
 import com.gio.exchange.business.ConversionConstants;
 import com.gio.exchange.business.CurrencyExchangeAppException;
+import com.gio.exchange.business.MessageConstants;
 import com.gio.exchange.business.calculation.ExchangeCalculator;
 import com.gio.exchange.business.vo.CurrencyExchangeRequest;
 import com.gio.exchange.business.vo.ServiceResponse;
@@ -23,9 +24,6 @@ import java.time.LocalDate;
 public class ConversionController {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-    private static final String SUCCESS_MESSAGE = "SUCCESS";
-    private static final String EXCEPTION_MESSAGE = "Unknown issue occurred during calculation.";
 
     @Autowired
     private ExchangeCalculator calculator;
@@ -49,11 +47,11 @@ public class ConversionController {
 
             response.setPayload(calculator.calculate(request));
             response.setStatus(HttpStatus.OK.value());
-            response.setMessage(SUCCESS_MESSAGE);
+            response.setMessage(MessageConstants.SUCCESS_MESSAGE);
         } catch (CurrencyExchangeAppException appExp){
             throw appExp;
         } catch (Exception exp){
-            throw new CurrencyExchangeAppException(EXCEPTION_MESSAGE, exp);
+            throw new CurrencyExchangeAppException(MessageConstants.UNKNOWN_EXCEPTION_MESSAGE, exp);
         }
 
         return  response;

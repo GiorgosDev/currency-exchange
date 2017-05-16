@@ -1,6 +1,7 @@
 package com.gio.exchange.controller;
 
 import com.gio.exchange.business.CurrencyExchangeAppException;
+import com.gio.exchange.business.MessageConstants;
 import com.gio.exchange.business.vo.ServiceResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +16,6 @@ public class ConversionExceptionHandler {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private static final String FAILED_MESSAGE = "FAILED";
-
     @ExceptionHandler(value = CurrencyExchangeAppException.class)
     public ResponseEntity<ServiceResponse> handleException(CurrencyExchangeAppException appExp, WebRequest request) {
         log.debug("Method : handleException - ENTRY");
@@ -25,7 +24,7 @@ public class ConversionExceptionHandler {
 
         errorObj.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 
-        errorObj.setMessage(FAILED_MESSAGE);
+        errorObj.setMessage(MessageConstants.FAILED_MESSAGE);
 
         errorObj.setPayload(appExp.getMessage());
 
