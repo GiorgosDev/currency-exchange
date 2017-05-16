@@ -41,7 +41,7 @@ RESPONSE
 
 Success Response
 
-{"responseCode":200,"message":"SUCCESS","payload":110437.7}
+{"status":200,"message":"SUCCESS","payload":110437.7}
 
 HTTP Status OK used to indicate successful conversion,
 payload used to deliver result of conversion
@@ -49,7 +49,7 @@ payload used to deliver result of conversion
 
 Error Response
 
-{"responseCode":500,"message":"FAILED","payload":"No data for requested currency present."}
+{"status":500,"message":"FAILED","payload":"No data for requested currency present."}
 
 HTTP ERROR CODES 400 and 500 are used to indicate conversion error
 
