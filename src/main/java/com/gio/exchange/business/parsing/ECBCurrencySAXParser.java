@@ -14,13 +14,12 @@ import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class ECBCurrencySAXParser extends DefaultHandler implements ConversionDataParser {
 
     public LocalDate referenceDate;
-    private Map<LocalDate, Map<String,Float>> parsedMap = new ConcurrentHashMap<>();
+    private Map<LocalDate, Map<String,Float>> parsedMap = new HashMap<>();
 
     public static final String ELEMENT_NAME = "Cube";
     public static final String DATE_ATTRIBUTE_NAME = "time";
@@ -32,7 +31,7 @@ public class ECBCurrencySAXParser extends DefaultHandler implements ConversionDa
 
     @Override
     public Map<LocalDate, Map<String,Float>> parse(InputStream inputData){
-        parsedMap = new ConcurrentHashMap<>();
+        parsedMap = new HashMap<>();
         try {
 
             XMLReader saxReader = XMLReaderFactory.createXMLReader();

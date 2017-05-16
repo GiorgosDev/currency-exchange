@@ -41,7 +41,7 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
     @Override
     public void load() {
         try(InputStream input = new URL(rateThreeMonthURL).openStream()) {
-            currencyRates = parser.parse(input);
+            currencyRates.putAll(parser.parse(input));
         } catch (IOException e) {
             throw new ECBConnectionException(e.getMessage(), e);
         }
@@ -52,9 +52,9 @@ public class ECBCurrencyKeeper implements CurrencyKeeper {
     public void refresh() {
         if(currencyRates.size() == 0)
             load();
+        else if(currencyRates.containsKey(LocalDate.now())) // no need to refresh
+            return;
         else {
-            if(currencyRates.containsKey(LocalDate.now())) // no need to refresh
-                return;
             removeExpiredRates();
             loadTodayRate();
         }
